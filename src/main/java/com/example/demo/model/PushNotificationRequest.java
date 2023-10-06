@@ -1,10 +1,17 @@
 package com.example.demo.model;
 
+import java.util.List;
+
 public class PushNotificationRequest {
+
+	private String id;
+	private String user;
     private String title;
     private String message;
     private String topic;
     private String token;
+
+	public List<String> tokenList;
     
     
   public PushNotificationRequest() {
@@ -12,13 +19,32 @@ public class PushNotificationRequest {
 	}
   
   
-	public PushNotificationRequest(String title, String message, String topic, String token) {
+	public PushNotificationRequest(String id, String user, String title, String message, String topic, String token) {
 		super();
+		this.id = id;
+		this.user = user;
 		this.title = title;
 		this.message = message;
 		this.topic = topic;
 		this.token = token;
 	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
 	public String getTitle() {
 		return title;
 	}

@@ -1,5 +1,19 @@
 package com.example.demo;
 
+import com.example.demo.model.ObjectRedis;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 public class Constant {
-    public static String device_key = "efuI8NMp2rC5CaBiN-pLw9:APA91bGxWgb0WE3y36W7GObhflNz1YnDlzUZTmbFQdZb74rBV-2uCc0U_y55eSsWOUetARHv2pIeFvoBSlZ-wwsnLpjBNW8XoXU054vCqJIQfchuFM5cP-xcxRs1pHDoiouqgZjCmlf1";
+    public static List<String> deviceKeyList = new ArrayList<>();
+
+    public static String deviceKey = "fw3offlalrxnI4ikBbKMIc:APA91bHGXz71eeKMHsCG64CWeOUYbho6XzcyO-u9Uk5nzNBTVOVosRuoB2RjszN96v3skEOjy_VwbAfUF68G573FZ3MXgGxJQXE4C4QjAQ9_I-iQjNzOg6bPuS7rqYhtryKoaRZFsBiq";
+
+    public static HashMap<String, String> userToken = new HashMap<>();
+
+    public static BlockingQueue<ObjectRedis> messageFromRedis = new LinkedBlockingQueue<>();
 }
