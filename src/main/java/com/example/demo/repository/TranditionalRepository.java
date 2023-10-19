@@ -3,6 +3,8 @@ package com.example.demo.repository;
 //import com.example.demo.connection.OracleDb;
 import com.example.demo.connection.OracleDb;
 import com.example.demo.model.BaseHeader;
+import com.example.demo.model.Response;
+import com.example.demo.model.entity.StoreAccountEntity;
 import com.google.gson.JsonObject;
 import oracle.jdbc.OracleTypes;
 import oracle.sql.CLOB;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -55,10 +58,12 @@ public class TranditionalRepository {
         }
     }
 
-    public void tranditional_service(String user, JsonObject data, String session, String cmd, String group)
+    public Response tranditional_service(String user, JsonObject data, String session, String cmd, String group)
             throws SQLException {
         Connection connection = null;
         CallableStatement callableStatement = null;
+        Response response = null;
+        List<StoreAccountEntity> storeAccountEntities = new ArrayList<>();
 
         try {
             connection = OracleDb.getConnection();
@@ -66,32 +71,61 @@ public class TranditionalRepository {
             CLOB clobParam = CLOB.createTemporary(connection, false, CLOB.DURATION_SESSION);
             clobParam.putChars(1, data.toString().toCharArray());
 
-//            BaseHeader baseHeader = new BaseHeader(user, "", "BACK", "VI", group);
-//            JsonObject jsonObject = baseHeader.toJsonObject();
+            BaseHeader baseHeader = new BaseHeader(user, "", "BACK", "VI", group);
+            JsonObject jsonObject = baseHeader.toJsonObject();
 
-//            String sql = "{ call PKG_API.cur_query_process(?, ?, ?, ?, ?, ?, ?) }";
-            String sql = "{ call STORE_ACCOUNT.get_all(?, ?, ?, ?, ?) }";
+            String sql = "{ call PKG_API.cur_query_process(?, ?, ?, ?, ?, ?, ?) }";
+//            String sql = "{ call STORE_ACCOUNT.get_all(?, ?, ?, ?, ?) }";
 
             callableStatement = connection.prepareCall(sql);
 
             // Thiết lập tham số vào procedure
             callableStatement.setString(1, user);
-//            callableStatement.setString(2, cmd);
-//            callableStatement.setString(3, jsonObject.toString());
-            callableStatement.setClob(2, clobParam);
-            callableStatement.registerOutParameter(3, Types.INTEGER);    // po_int_result_code
-            callableStatement.registerOutParameter(4, Types.VARCHAR);    // po_str_result_msg
-            callableStatement.registerOutParameter(5, OracleTypes.CURSOR); // po_result (Oracle cursor)
+            callableStatement.setString(2, cmd);
+            callableStatement.setString(3, jsonObject.toString());
+            callableStatement.setClob(4, clobParam);
+            callableStatement.registerOutParameter(5, Types.INTEGER);    // po_int_result_code
+            callableStatement.registerOutParameter(6, Types.VARCHAR);    // po_str_result_msg
+            callableStatement.registerOutParameter(7, OracleTypes.CURSOR); // po_result (Oracle cursor)
 
             callableStatement.executeUpdate();
 
-            int resultCode = callableStatement.getInt(3);
-            String resultMsg = callableStatement.getString(4);
-            ResultSet resultSet = (ResultSet) callableStatement.getObject(5);
+            Integer resultCode = callableStatement.getInt(5);
+            String resultMsg = callableStatement.getString(6);
+            ResultSet resultSet = (ResultSet) callableStatement.getObject(7);
 
             System.out.println("resultCode: " + resultCode);
             System.out.println("resultMsg: " + resultMsg);
             System.out.println("resultSet: " + resultSet);
+
+            Integer size = resultSet.getFetchSize();
+            if(cmd.equals("BACK.GET_ALL_STORE_ACCOUNT")) {
+                while(resultSet.next()) {
+                    StoreAccountEntity storeAccountEntity = new StoreAccountEntity();
+                    storeAccountEntity.setRowNum(resultSet.getInt("ROW_NUM"));
+                    storeAccountEntity.setPK_STORE_ACCOUNT(resultSet.getString("PK_STORE_ACCOUNT"));
+                    storeAccountEntity.setC_ACCOUNT_CODE(resultSet.getString("C_ACCOUNT_CODE"));
+                    storeAccountEntity.setC_ACCOUNT_FULL(resultSet.getString("C_ACCOUNT_FULL"));
+                    storeAccountEntity.setC_ACCOUNT_NAME(resultSet.getString("C_ACCOUNT_NAME"));
+                    storeAccountEntity.setC_ACCOUNT_TYPE(resultSet.getString("C_ACCOUNT_TYPE"));
+                    storeAccountEntity.setC_STORE_CODE(resultSet.getString("C_STORE_CODE"));
+                    storeAccountEntity.setC_DEPOSIT_CODE(resultSet.getString("C_DEPOSIT_CODE"));
+//                    Date oracleOpenDate = resultSet.getDate("C_OPEN_DATE");
+//                    storeAccountEntity.setC_OPEN_DATE(oracleOpenDate);
+//                    Date oracleCloseDate = resultSet.getDate("C_CLOSE_DATE");
+//                    storeAccountEntity.setC_CLOSE_DATE(new java.util.Date(oracleCloseDate.getTime()));
+                    storeAccountEntity.setC_STATUS(resultSet.getString("C_STATUS"));
+                    storeAccountEntity.setC_CONTENT(resultSet.getString("C_CONTENT"));
+                    storeAccountEntity.setC_CREATOR_CODE(resultSet.getString("C_CREATOR_CODE"));
+//                    Date oracleCreateTime = resultSet.getDate("C_CREATE_TIME");
+//                    storeAccountEntity.setC_CREATE_TIME(new java.util.Date(oracleCreateTime.getTime()));
+                    storeAccountEntity.setC_TOTAL_RECORD(size);
+                    storeAccountEntities.add(storeAccountEntity);
+//                    System.out.println(storeAccountEntity.);
+                }
+
+                response = new Response(resultCode.toString(), resultMsg, "", storeAccountEntities);
+            }
 
             clobParam.freeTemporary();
 
@@ -109,5 +143,6 @@ public class TranditionalRepository {
                 e.printStackTrace();
             }
         }
+        return response;
     }
 }

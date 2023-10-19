@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.PushNotificationResponse;
+import com.example.demo.model.Response;
+import com.example.demo.model.entity.StoreAccountEntity;
 import com.example.demo.repository.TranditionalRepository;
 import com.example.demo.model.TranditionalObject;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -57,7 +59,7 @@ public class TranditionalController {
 //    }
     @CrossOrigin("*")
     @PostMapping("/traditional-service")
-    public ResponseEntity tranditional_service(@RequestBody String jsonString) throws SQLException {
+    public ResponseEntity<Response> tranditional_service(@RequestBody String jsonString) throws SQLException {
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
 
@@ -73,8 +75,8 @@ public class TranditionalController {
         System.out.println(group);
         System.out.println(data);
 
-        tranditionalRepository.tranditional_service(user, data, session, cmd, group);
-        return new ResponseEntity<>(new PushNotificationResponse(HttpStatus.OK.value(), "Successful registration."), HttpStatus.OK);
+        Response response = tranditionalRepository.tranditional_service(user, data, session, cmd, group);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @GetMapping("/hello")
     public String hello() {
