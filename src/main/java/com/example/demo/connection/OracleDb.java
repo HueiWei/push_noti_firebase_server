@@ -36,11 +36,13 @@ public class OracleDb {
     pds.setMaxPoolSize(20);
     pds.setTimeoutCheckInterval(5);
     pds.setInactiveConnectionTimeout(10);
+
   }
 
   private void checkInitConnection() throws SQLException {
     Connection connection = pds.getConnection();
     if (!((ValidConnection) connection).isValid()) {
+        connection.close();
       throw new SQLException("Connection is invalid");
     }
   }

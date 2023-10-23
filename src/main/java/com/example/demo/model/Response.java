@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import com.example.demo.model.entity.EntityDB;
+import com.example.demo.model.entity.ParameterEntity;
 import com.example.demo.model.entity.StoreAccountEntity;
 
 import java.util.List;
@@ -8,12 +10,12 @@ public class Response {
     private String code;
     private String message;
     private String txId;
-    private List<StoreAccountEntity> data;
+    private List<? extends EntityDB> data;
 
     public Response() {
     }
 
-    public Response(String code, String message, String txId, List<StoreAccountEntity> data) {
+    public Response(String code, String message, String txId, List<? extends EntityDB> data) {
         this.code = code;
         this.message = message;
         this.txId = txId;
@@ -44,11 +46,11 @@ public class Response {
         this.txId = txId;
     }
 
-    public List<StoreAccountEntity> getData() {
+    public List<? extends EntityDB> getData() {
         return data;
     }
 
-    public void setData(List<StoreAccountEntity> data) {
+    public void setData(List<? extends EntityDB> data) {
         this.data = data;
     }
 }

@@ -2,7 +2,7 @@ package com.example.demo.model.entity;
 
 import java.util.Date;
 
-public class StoreAccountEntity {
+public class StoreAccountEntity implements EntityDB{
     private Integer ROW_NUM;
     private String PK_STORE_ACCOUNT;
     private String C_STORE_CODE;

@@ -1,22 +1,12 @@
 package com.example.demo;
 
-import com.example.demo.controller.BSCController;
-import com.example.demo.service.DataPublisher;
-import com.example.demo.service.FCMInitializer;
-import com.example.demo.service.QueueDataReader;
-import org.apache.http.client.HttpClient;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.MQTT.Subscriber;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.*;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 //import java.net.URI;
@@ -24,8 +14,13 @@ import java.net.URISyntaxException;
 @SpringBootApplication
 public class SpringBootPushNotificationsApplication {
 
-	public static void main(String[] args) throws URISyntaxException, IOException {
+	public static void main(String[] args) throws URISyntaxException, IOException, MqttException {
 		SpringApplication.run(SpringBootPushNotificationsApplication.class, args);
+
+		// Đọc dữ liệu từ MQTT Broker
+//		ApplicationContext context = SpringApplication.run(SpringBootPushNotificationsApplication.class, args);
+//		Subscriber broker = context.getBean(Subscriber.class);
+//		broker.init();
 
 		// Khởi tạo firebase
 //		ApplicationContext context = SpringApplication.run(SpringBootPushNotificationsApplication.class, args);
